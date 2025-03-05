@@ -13,10 +13,18 @@ import { z } from 'zod';
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Card } from '@/components/ui/card';
-import { Link } from 'react-router-dom';
-import { RouteSignUp } from '@/helpers/RouteName';
+import { Link, useNavigate } from 'react-router-dom';
+import { RouteIndex, RouteSignUp } from '@/helpers/RouteName';
+import axios from 'axios';
+import { getEnv } from '@/helpers/getEnv';
+import { showToast } from '@/helpers/showToast';
+import GoogleLogin from '@/components/GoogleLogin';
+import { useDispatch } from 'react-redux';
+import { setUser } from '@/redux/user/user.slice';
 
 const SignIn = () => {
+const dispatch = useDispatch();
+  const navigate = useNavigate();
 
 const formSchema = z.object({
   email: z.string().email(),
@@ -32,8 +40,29 @@ const formSchema = z.object({
        },
      });
 
-     const onSubmit = (value)=>{
-        console.log(value);
+     const onSubmit = async(value)=>{
+        // console.log(value);
+         try{
+              const responses = await axios.post(
+                `${getEnv("VITE_API_BASE_URL")}/auth/login`,
+                
+                value
+              );
+              console.log(responses);
+
+              if (!responses.statusText==="OK") {
+                showToast("error", responses.data.message);
+                return;
+              }
+                dispatch(setUser(responses.data.user))
+                navigate(RouteIndex);
+                showToast("success",responses.data.message)
+
+           }
+           catch(err){
+            console.log(err);
+            showToast("error",err.message)
+           }
      }
 
     return (
@@ -42,6 +71,13 @@ const formSchema = z.object({
           <h1 className="text-lg md:text-xl lg:text-2xl font-bold text-center mb-5">
             Login Into Account
           </h1>
+          <div>
+            <GoogleLogin/>
+            <div className='border-2 my-5 flex items-center justify-center'>
+              <span className='absolute bg-white px-1'>Or</span>
+
+            </div>
+          </div>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
               <div className="mb-3">

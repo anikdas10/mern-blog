@@ -16,9 +16,10 @@ import { BiCategoryAlt } from "react-icons/bi";
 import { GrBlog } from "react-icons/gr";
 import { FaRegComments, FaUsers } from "react-icons/fa";
 import { GoDot } from "react-icons/go";
+import { RouteBlog, RouteCategoryDetails } from '@/helpers/RouteName';
 const AppSidebar = () => {
     return (
-      <Sidebar>
+      <Sidebar className="w-56">
         <SidebarHeader>
           <h2 className="font-bold text-lg md:text-xl lg:text-2xl xl:text-3xl">
             <span className="text-violet-600">G</span>Blog
@@ -37,14 +38,14 @@ const AppSidebar = () => {
               <SidebarMenuItem>
                 <SidebarMenuButton>
                   <BiCategoryAlt />
-                  <Link to="/">Categories</Link>
+                  <Link to={RouteCategoryDetails}>Categories</Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
 
               <SidebarMenuItem>
                 <SidebarMenuButton>
                   <GrBlog />
-                  <Link to="/">Blogs</Link>
+                  <Link to={RouteBlog}>Blogs</Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
 
